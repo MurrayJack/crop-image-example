@@ -3,6 +3,7 @@ import { createRef, useState, useEffect } from "react";
 export default () => {
   const workSpace = createRef();
   const image = createRef();
+  const canvas = createRef();
   const imageSize = 600;
 
   let state;
@@ -10,6 +11,12 @@ export default () => {
   const handleResizeEvent = e => {
     const percent = e.target.value / 100;
     image.current.width = imageSize * percent;
+  };
+
+  const buildImage = (x, y, s) => {
+    canvas.current.height = 300;
+    canvas.current.width = 300;
+    canvas.current.getContext("2d").drawImage(image.current, x + 800, -y + 250, 3000, 2000, 0, 0, 300, 200);
   };
 
   const handleMouseDown = e => {
@@ -45,6 +52,9 @@ export default () => {
 
     image.current.style.left = left + "px";
     image.current.style.top = top + "px";
+
+    buildImage(left, top, 2);
+    //window.open(crop_canvas.toDataURL("image/png"));
   };
 
   useEffect(() => {
@@ -54,6 +64,16 @@ export default () => {
       current.addEventListener("pointerdown", handleMouseDown, false);
     }
 
+    var img = new Image();
+    img.onload = function() {
+      var height = img.height;
+      var width = img.width;
+    };
+
+    img.src = "https://cdn.collider.com/wp-content/uploads/2017/10/the-gifted-amy-acker-02.jpg";
+
+    buildImage(0, 0, 1);
+
     return () => {
       current.removeEventListener("pointerdown", handleMouseDown);
     };
@@ -62,42 +82,56 @@ export default () => {
   return (
     <>
       <main>
-        <div ref={workSpace} className="workspace">
-          <img ref={image} width={imageSize} src="https://cdn.collider.com/wp-content/uploads/2017/10/the-gifted-amy-acker-02.jpg" alt="A" />
+        <div>
+          <div ref={workSpace} className="workspace">
+            <img ref={image} width={imageSize} src="https://cdn.collider.com/wp-content/uploads/2017/10/the-gifted-amy-acker-02.jpg" alt="A" />
 
-          <div className="circle" />
-        </div>
-        <div className="resizeWrapper">
-          <div className="resize">
-            <div>
-              <svg width="18" height="18" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M14.6533 22.3455L11.925 18.8544L7.19999 24.9H28.8L20.7 14.8247L14.6533 22.3455ZM4.5 8.7C4.5 7.20868 5.71289 6 7.18733 6H28.8127C30.2966 6 31.5 7.20128 31.5 8.7V26.25C31.5 27.7413 30.2871 28.95 28.8127 28.95H7.18733C5.70339 28.95 4.5 27.7487 4.5 26.25L4.5 8.7ZM11.25 15.45C12.7413 15.45 13.95 14.2413 13.95 12.75C13.95 11.2587 12.7413 10.05 11.25 10.05C9.75867 10.05 8.54999 11.2587 8.54999 12.75C8.54999 14.2413 9.75867 15.45 11.25 15.45Z"
-                  fill="#566878"
-                />
-              </svg>
-            </div>
-            <input min={0} max={200} defaultValue="100" type="range" onChange={handleResizeEvent} />
-            <div>
-              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M14.6533 22.3455L11.925 18.8544L7.19999 24.9H28.8L20.7 14.8247L14.6533 22.3455ZM4.5 8.7C4.5 7.20868 5.71289 6 7.18733 6H28.8127C30.2966 6 31.5 7.20128 31.5 8.7V26.25C31.5 27.7413 30.2871 28.95 28.8127 28.95H7.18733C5.70339 28.95 4.5 27.7487 4.5 26.25L4.5 8.7ZM11.25 15.45C12.7413 15.45 13.95 14.2413 13.95 12.75C13.95 11.2587 12.7413 10.05 11.25 10.05C9.75867 10.05 8.54999 11.2587 8.54999 12.75C8.54999 14.2413 9.75867 15.45 11.25 15.45Z"
-                  fill="#566878"
-                />
-              </svg>
+            <div className="circle" />
+          </div>
+          <div className="resizeWrapper">
+            <div className="resize">
+              <div>
+                <svg width="18" height="18" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M14.6533 22.3455L11.925 18.8544L7.19999 24.9H28.8L20.7 14.8247L14.6533 22.3455ZM4.5 8.7C4.5 7.20868 5.71289 6 7.18733 6H28.8127C30.2966 6 31.5 7.20128 31.5 8.7V26.25C31.5 27.7413 30.2871 28.95 28.8127 28.95H7.18733C5.70339 28.95 4.5 27.7487 4.5 26.25L4.5 8.7ZM11.25 15.45C12.7413 15.45 13.95 14.2413 13.95 12.75C13.95 11.2587 12.7413 10.05 11.25 10.05C9.75867 10.05 8.54999 11.2587 8.54999 12.75C8.54999 14.2413 9.75867 15.45 11.25 15.45Z"
+                    fill="#566878"
+                  />
+                </svg>
+              </div>
+              <input min={0} max={200} defaultValue="100" type="range" onChange={handleResizeEvent} />
+              <div>
+                <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M14.6533 22.3455L11.925 18.8544L7.19999 24.9H28.8L20.7 14.8247L14.6533 22.3455ZM4.5 8.7C4.5 7.20868 5.71289 6 7.18733 6H28.8127C30.2966 6 31.5 7.20128 31.5 8.7V26.25C31.5 27.7413 30.2871 28.95 28.8127 28.95H7.18733C5.70339 28.95 4.5 27.7487 4.5 26.25L4.5 8.7ZM11.25 15.45C12.7413 15.45 13.95 14.2413 13.95 12.75C13.95 11.2587 12.7413 10.05 11.25 10.05C9.75867 10.05 8.54999 11.2587 8.54999 12.75C8.54999 14.2413 9.75867 15.45 11.25 15.45Z"
+                    fill="#566878"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
         <div>
-          <button>Crop Photo</button>
+          <canvas ref={canvas} />
         </div>
       </main>
 
       <style jsx>{`
+        main {
+          display: grid;
+          grid-template-columns: 600px auto;
+        }
+
+        canvas {
+          width: 300px;
+          height: 300px;
+          border: 1px solid deeppink;
+          grid-gap: 20px;
+        }
+
         img {
           position: absolute;
           cursor: move;
@@ -163,10 +197,12 @@ export default () => {
           background: #ffffff;
           cursor: pointer;
           -webkit-appearance: none;
+          background-image: radial-gradient(circle 6px, #0075db 99%, transparent 0);
           margin-top: -8px;
         }
+
         input[type="range"]:focus::-webkit-slider-runnable-track {
-          background: #367ebd;
+          background: #0075db;
         }
         input[type="range"]::-moz-range-track {
           width: 100%;
